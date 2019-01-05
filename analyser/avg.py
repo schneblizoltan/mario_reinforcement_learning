@@ -1,4 +1,4 @@
-COUNT = 200 """How many elements should be averaged"""
+COUNT = 200                                                 # How many elements should be averaged
 
 def main(file):
     """Takes the result file and makes a new file wich contains the averaged values"""

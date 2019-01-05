@@ -3,8 +3,7 @@
 import json
 import numpy as np
 
-# Defines the size of our environment matrix
-DIM = 13
+DIM = 13                                                    # The size of our environment matrix
 
 class Utils(object):
     """This class represents the methods wich are converting the JSON messages into"""

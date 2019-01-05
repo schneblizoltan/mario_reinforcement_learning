@@ -11,8 +11,8 @@ class Environment(object):
 
     SOCKET = "localhost"
     PORT = 4561
-    ACTION_NR = 5   """Number of action wich the agent knows about"""
-    STATE_NR = 13   """Number of states defined"""
+    ACTION_NR = 5                                           # Number of action wich the agent knows about
+    STATE_NR = 13                                           # Number of states defined
 
     def __init__(self):
         self.action_n = Environment.ACTION_NR
@@ -60,22 +60,22 @@ class Environment(object):
     def step(self, action, obs):
         state = self.get_state(obs)
         reward = self.reward_matrix[state, action]
-        # if action == 0:   # Down
+        # if action == 0:                                    # Down
         #     self.request.press_down()
-        # elif action == 1: # Up
+        # elif action == 1:                                  # Up
         #     self.request.press_up()
-        if action == 0: # Left
+        if action == 0:                                      # Left
             self.request.press_left()
-        elif action == 1: # Right
+        elif action == 1:                                    # Right
             self.request.press_right()
-        elif action == 2: # A
+        elif action == 2:                                    # A
             self.request.press_a()
-        # elif action == 5: # B
+        # elif action == 5:                                  # B
         #     self.request.press_b()
-        elif action == 3: # A-Left
+        elif action == 3:                                    # A-Left
             self.step(0, obs)
             self.step(2, obs)
-        elif action == 4: # A-Right
+        elif action == 4:                                    # A-Right
             self.step(1, obs)
             self.step(2, obs)
             self.step(2, obs)
@@ -116,7 +116,6 @@ class Environment(object):
         self.reward_matrix[1,:] = [-1, 0.9, 1, -1, 1]
 
         # State 2 - Enemy in front in 1? tile range, no tiles above / tiles above
-        #self.reward_matrix[2,:] = [-1, -2, +1, -1, 0.9]
         self.reward_matrix[2,:] = [-1, -1, +1, -1, 0.9]
 
         # State 3 - Small obstacle
@@ -194,7 +193,7 @@ class Environment(object):
 
         if not self.utils.is_in_range(game_state[6,0:mario_pos], 2):       # No enemy before
             if not self.utils.is_in_range(game_state[6,mario_pos+1:], 2):  # No enemy after
-                if game_state[4, mario_pos] == 1:                     # Tile above
+                if game_state[4, mario_pos] == 1:                          # Tile above
                     return 1                             # Block above, no enmies - State 1 
        
         return 0                                         # Nothin in front, above, in back - State 0

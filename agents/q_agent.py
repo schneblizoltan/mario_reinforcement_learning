@@ -20,12 +20,12 @@ class QAgent(object):
         self.distance = 0
         self.cumulative_reward = 0
         self.config = {
-            "alpha" : 0.01,         # Learning rate
-            "eps": 0.1,             # Exploration rate
-            "eps_decay": 0.995,     # Speed of epsilon decay
+            "alpha" : 0.01,                                                                 # Learning rate
+            "eps": 0.1,                                                                     # Exploration rate
+            "eps_decay": 0.995,                                                             # Speed of epsilon decay
             "eps_min": 0.1,         
-            "gamma": 0.95,          # Discount
-            "n_iter": 15000 }       # Number of iterations
+            "gamma": 0.95,                                                                  # Discount
+            "n_iter": 15000 }                                                               # Number of iterations
 
     def load_from_file(self, file):
         i = 0
@@ -33,14 +33,12 @@ class QAgent(object):
         for line in open(file):
             self.q[i] = np.fromstring(line, dtype="float32", sep="     ")
             i += 1
-        #self.q.reshape((self.state_n,self.action_n))
 
     def act(self, eps=None):
         if eps is None:
             eps = self.config["eps"]
         
-        # epsilon greedy
-        if np.random.rand() < eps:
+        if np.random.rand() < eps:                                                          # epsilon greedy
             return self.action_sample()
         elif np.sum(self.q[self.state]) > 0:
             return np.argmax(self.q[self.state])
@@ -95,6 +93,6 @@ class QAgent(object):
         self.q[self.state, action] *= 1 - self.config["alpha"]
         self.q[self.state, action] += self.config["alpha"] * (reward + self.config["gamma"] * future)
         
-        # renormalize row to be between 0 and 1
+        # renormalize row to be between 0 and 1 => doesn't help
         # rn = self.q[self.state][self.q[self.state] > 0] / np.sum(self.q[self.state][self.q[self.state] > 0])
         # self.q[self.state][self.q[self.state] > 0] = rn

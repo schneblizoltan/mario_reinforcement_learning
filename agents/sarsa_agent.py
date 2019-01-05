@@ -20,19 +20,18 @@ class SarsaAgent(object):
         self.distance = 0
         self.cumulative_reward = 0
         self.config = {
-            "alpha" : 10**-6,       # Learning rate
-            "eps": 1.0,             # Exploration rate
-            "eps_decay": 0.995,     # Speed of epsilon decay
+            "alpha" : 10**-6,                                                                       # Learning rate
+            "eps": 1.0,                                                                             # Exploration rate
+            "eps_decay": 0.995,                                                                     # Speed of epsilon decay
             "eps_min": 0.01,         
-            "gamma": 0.95,          # Discount
-            "n_iter": 20000 }       # Number of iterations
+            "gamma": 0.95,                                                                          # Discount
+            "n_iter": 20000 }                                                                       # Number of iterations
         
     def act(self, eps=None):
         if eps is None:
             eps = self.config["eps"]
         
-        # epsilon greedy
-        if np.random.rand() <= eps:
+        if np.random.rand() <= eps:                                                                 # epsilon greedy
             return self.action_sample()
         else:
             return np.argmax(self.q[self.state])
@@ -41,8 +40,7 @@ class SarsaAgent(object):
         if eps is None:
             eps = self.config["eps"]
         
-        # epsilon greedy
-        if np.random.rand() <= eps:
+        if np.random.rand() <= eps:                                                                 # epsilon greedy
             return self.action_sample()
         else:
             return np.argmax(self.q[state])
@@ -94,6 +92,6 @@ class SarsaAgent(object):
     def update_q(self, state, action, state2, action2, reward):
         self.q[self.state, action] += self.config["alpha"] * (reward + self.config["gamma"] * self.q[state2][action2] - self.q[self.state, action])
 
-        # renormalize row to be between 0 and 1
+        # renormalize row to be between 0 and 1 => doesn't help
         # rn = self.q[self.state][self.q[self.state] > 0] / np.sum(self.q[self.state][self.q[self.state] > 0])
         # self.q[self.state][self.q[self.state] > 0] = rn

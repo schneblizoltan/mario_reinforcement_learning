@@ -6,8 +6,8 @@ from scipy.stats import linregress,pearsonr
 class Analyser(object):
     """This class represents the methods wich are analysing the performance of a RF agent"""
 
-    WIN = 3265  """At this distance the agent completed level 1"""
-    TRAIN_EPISODE_NR = 14000 """For this many episodes we won't be calculating the winrate"""
+    WIN = 3265                                                              # At this distance the agent completed level 1
+    TRAIN_EPISODE_NR = 14000                                                # For this many episodes we won't be calculating the winrate
 
     def pearson_r(self, file1, file2):
         """ Returns the pearson r parameter for two statistic file"""

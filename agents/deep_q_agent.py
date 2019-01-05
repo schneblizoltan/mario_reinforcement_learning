@@ -20,18 +20,18 @@ class DeepQAgent(object):
         self.action_n = action_n
         self.location_distance = dist_file_name
         self.location_reward = reward_file_name
-        self.memory = deque(maxlen=55000) #5000 volt eddig
+        self.memory = deque(maxlen=55000)
         self.state = 0
         self.distance = 0
         self.cumulative_reward = 0
         self.config = {
-            "alpha" : 10**-6,       # Learning rate
-            "eps": 1.0,             # Exploration rate
-            "eps_decay": 0.995,     # Speed of epsilon decay
+            "alpha" : 10**-6,                                                               # Learning rate
+            "eps": 1.0,                                                                     # Exploration rate
+            "eps_decay": 0.995,                                                             # Speed of epsilon decay
             "eps_min": 0.01,         
-            "gamma": 0.95,          # Discount
-            "batch_size": 8192,     # lehetne kisebb 
-            "n_iter": 50000 }       # Number of iterations
+            "gamma": 0.95,                                                                  # Discount
+            "batch_size": 8192,      
+            "n_iter": 50000 }                                                               # Number of iterations
         self.model = self._create_model() 
         plot_model(self.model, to_file='model.png')
         print(self.model.summary())
@@ -71,8 +71,7 @@ class DeepQAgent(object):
         if eps is None:
             eps = self.config["eps"]
         
-        # epsilon greedy
-        if np.random.rand() <= eps:
+        if np.random.rand() <= eps:                                                         # epsilon greedy
             return self.action_sample()
         else:
             act_values = self.model.predict(self.state)
@@ -85,37 +84,30 @@ class DeepQAgent(object):
         batch = self.memory_sample(batch_size)
         batch_len = len(batch)
 
-        # nem tudom meg mire
         no_state = []
         no_state.append(np.zeros(self.state_n))
 
-        # kiveszem az allapotokat "states"-be es a vegallapotokat "states_"-ba
-        states = np.array([ o[0] for o in batch ])             
-        states_ = np.array([ (no_state if o[4] is True else o[3]) for o in batch ])
+        states = np.array([ o[0] for o in batch ])                                          # all states
+        states_ = np.array([ (no_state if o[4] is True else o[3]) for o in batch ])         # end states
 
-        # mivel rosszul vettem ki, atformazom batch_size*state_number formatumra
-        states = states.reshape(batch_len, self.state_n)
-        states_ = states_.reshape(batch_len, self.state_n)
+        states = states.reshape(batch_len, self.state_n)                                    # reshape to batch_size*state_number format
+        states_ = states_.reshape(batch_len, self.state_n)                                  # reshape to batch_size*state_number format
 
-        # p megmondja minden allapotra hogy melyik cselekedetnek mennyi lenne az erteke
-        # p_ ugyan ez csak vegallapotra
-        p = self.model.predict(states)
-        p_ = self.model.predict(states_)
+        p = self.model.predict(states)                                                      # value of each action for the states
+        p_ = self.model.predict(states_)                                                    # value of each action for the end states
     
-        # az "eredmeny-nek"
-        x = np.zeros((batch_len, self.state_n))
-        y = np.zeros((batch_len, self.action_n))
+        x = np.zeros((batch_len, self.state_n))                                             # results
+        y = np.zeros((batch_len, self.action_n))                                            # results
 
-        # vegigjatszuk az emlekezetunket
-        for i in range(batch_len):
+        for i in range(batch_len):                                                          # replay from memory
             o = batch[i]
             s = o[0]; a = o[1]; r = o[2]; s_ = o[3]; d = o[4]
             
-            t = p[i]    # kiveszem a vegigjatszas eredmenyet adott allapotra
+            t = p[i]                                                                        # result from a given state
             if d is True:   
-                t[a] = r    # ha vege van az epizodnak marad a reward
+                t[a] = r                                                                    # at the end of episode we get the full reward
             else:
-                t[a] = r + self.config['gamma'] * np.amax(p_[i]) # sulyozzuk, azzal hogy mennyi lehet a max jutalom a vegen
+                t[a] = r + self.config['gamma'] * np.amax(p_[i])                            # we get only learning_rate*reward
 
             x[i] = s
             y[i] = t
