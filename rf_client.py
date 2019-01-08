@@ -1,6 +1,6 @@
 from environment import environment as env
 from agents import q_agent, deep_q_agent, sarsa_agent
-from analyser.analyser import analyser
+from analyser import analyser
 
 import numpy as np
 
